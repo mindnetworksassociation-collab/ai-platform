@@ -14,28 +14,54 @@
   - Loaded llama3.2:1b to Ollama
   - Landing page created
 
-[2025-12-28] v0.3.0 - TUNNEL + API LIVE 🚀
-  - Cloudflare Tunnel working (4 connections fra03/10/16/18)
-  - DNS configured: ollama.efremov.help, api.efremov.help
-  - API Gateway deployed and tested
+[2025-12-28] v0.3.0 - TUNNEL + API LIVE
+  - Cloudflare Tunnel working
+  - API Gateway deployed to api.efremov.help
   - D1 audit_logs table created
+
+[2025-12-28] v0.4.0 - RAG PIPELINE COMPLETE 🚀
+  - RAG API Server on DigitalOcean (Python/Flask)
+  - nomic-embed-text model (768 dimensions)
+  - Vector search with pgvector
+  - RAG Chat: query → search docs → LLM with context
+  - Rate limiting + API keys in Gateway
+  - Landing page deployed to CloudFlare Pages
   
   LIVE ENDPOINTS:
+  - https://efremov.help - Landing page
+  - https://llm-landing.pages.dev - Landing (backup)
   - https://api.efremov.help/health - Health check
   - https://api.efremov.help/api/chat - Chat with LLM
   - https://api.efremov.help/api/models - List models
   - https://api.efremov.help/api/embeddings - Generate embeddings
+  - https://api.efremov.help/api/keys/create - Create API key
   - https://ollama.efremov.help - Direct Ollama access
+  
+  RAG API (via tunnel - add rag.efremov.help CNAME):
+  - POST /documents - Add document with auto-embedding
+  - POST /search - Vector similarity search
+  - POST /chat - RAG-powered chat
+
+  MODELS:
+  - llama3.2:1b (1.3GB) - Chat/completion
+  - nomic-embed-text (274MB) - Embeddings (768 dim)
 
   INFRASTRUCTURE:
   - Droplet: 164.92.231.18 (fra1, 4GB RAM)
   - Tunnel: 4b670c72-305e-4720-8531-391c003bbdb3
   - D1: 67e0cf7a-7170-4145-bfbc-9b0d2f180dce
   - KV: 520ca0c4805e4f108d69f2ac876f11cb
-  - Model: llama3.2:1b (1.3GB)
+  - PostgreSQL: pgvector enabled, 768-dim vectors
+  
+  SERVICES ON DROPLET:
+  - llm-postgres: pgvector/pgvector:pg16
+  - llm-redis: redis:7-alpine
+  - llm-ollama: ollama/ollama
+  - rag-api: Python Flask (systemd)
+  - cloudflared: Tunnel daemon (systemd)
   
   NEXT:
-  - Deploy landing page to CloudFlare Pages
   - Add Supabase auth integration
-  - Create RAG pipeline (embeddings → pgvector)
-  - Build document Q&A agent
+  - Build AI agents (document Q&A, web search)
+  - Add conversation history
+  - Deploy mobile-friendly chat UI

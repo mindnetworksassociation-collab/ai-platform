@@ -14,22 +14,28 @@
   - Loaded llama3.2:1b to Ollama
   - Landing page created
 
-[2025-12-28] v0.3.0 - TUNNEL SETUP
-  - Cloudflare Tunnel running (ID: 4b670c72-305e-4720-8531-391c003bbdb3)
-  - 4 connections established (fra03, fra10, fra16, fra18)
-  - Config: ollama.efremov.help → localhost:11434
-  - Config: api.efremov.help → localhost:8080
+[2025-12-28] v0.3.0 - TUNNEL + API LIVE 🚀
+  - Cloudflare Tunnel working (4 connections fra03/10/16/18)
+  - DNS configured: ollama.efremov.help, api.efremov.help
+  - API Gateway deployed and tested
+  - D1 audit_logs table created
   
-  PENDING DNS RECORDS (add in CloudFlare):
-  - CNAME: ollama → 4b670c72-305e-4720-8531-391c003bbdb3.cfargotunnel.com
-  - CNAME: api → 4b670c72-305e-4720-8531-391c003bbdb3.cfargotunnel.com
+  LIVE ENDPOINTS:
+  - https://api.efremov.help/health - Health check
+  - https://api.efremov.help/api/chat - Chat with LLM
+  - https://api.efremov.help/api/models - List models
+  - https://api.efremov.help/api/embeddings - Generate embeddings
+  - https://ollama.efremov.help - Direct Ollama access
 
   INFRASTRUCTURE:
   - Droplet: 164.92.231.18 (fra1, 4GB RAM)
-  - Services: PostgreSQL, Redis, Ollama (all healthy)
-  - Model: llama3.2:1b (1.3GB) - tested and working
+  - Tunnel: 4b670c72-305e-4720-8531-391c003bbdb3
+  - D1: 67e0cf7a-7170-4145-bfbc-9b0d2f180dce
+  - KV: 520ca0c4805e4f108d69f2ac876f11cb
+  - Model: llama3.2:1b (1.3GB)
   
   NEXT:
-  - Add DNS records for tunnel
-  - Deploy landing to CloudFlare Pages
-  - Connect API Gateway Worker → ollama.efremov.help
+  - Deploy landing page to CloudFlare Pages
+  - Add Supabase auth integration
+  - Create RAG pipeline (embeddings → pgvector)
+  - Build document Q&A agent

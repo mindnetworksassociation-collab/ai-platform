@@ -2,36 +2,34 @@
 # ================================
 # ARCHITECTURE: CloudFlare Edge + DigitalOcean Backend
 # DOMAIN: efremov.help
+# GITHUB: https://github.com/mindnetworksassociation-collab/ai-platform
 # ================================
 
 [2025-12-28] v0.1.0 - INITIAL
   - Project structure created
   - Workers: API Gateway, Search API
-  - Docker: PostgreSQL+pgvector, Redis, Ollama
 
 [2025-12-28] v0.2.0 - DATABASE + MODEL
   - PostgreSQL schema with pgvector
   - Loaded llama3.2:1b to Ollama
   - Landing page created
 
-[2025-12-28] v0.3.0 - DOMAIN SETUP
-  - Configured efremov.help domain
-  - API Gateway deployed to api.efremov.help
-  - Cloudflare Tunnel running for ollama.efremov.help
-  - Landing deployed to CloudFlare Pages
-
-  ENDPOINTS:
-  - Landing: https://efremov.help (pending domain setup)
-  - API: https://api.efremov.help/api/chat
-  - Ollama: https://ollama.efremov.help (via tunnel)
+[2025-12-28] v0.3.0 - TUNNEL SETUP
+  - Cloudflare Tunnel running (ID: 4b670c72-305e-4720-8531-391c003bbdb3)
+  - 4 connections established (fra03, fra10, fra16, fra18)
+  - Config: ollama.efremov.help → localhost:11434
+  - Config: api.efremov.help → localhost:8080
   
-  INFRASTRUCTURE:
-  - Droplet: 164.92.231.18 (fra1, 4GB)
-  - Tunnel ID: 4b670c72-305e-4720-8531-391c003bbdb3
-  - D1: 67e0cf7a-7170-4145-bfbc-9b0d2f180dce
-  - KV: 520ca0c4805e4f108d69f2ac876f11cb
+  PENDING DNS RECORDS (add in CloudFlare):
+  - CNAME: ollama → 4b670c72-305e-4720-8531-391c003bbdb3.cfargotunnel.com
+  - CNAME: api → 4b670c72-305e-4720-8531-391c003bbdb3.cfargotunnel.com
 
-  TODO:
-  - Add ollama.efremov.help hostname to tunnel
-  - Connect Pages to efremov.help domain
-  - Add Supabase auth integration
+  INFRASTRUCTURE:
+  - Droplet: 164.92.231.18 (fra1, 4GB RAM)
+  - Services: PostgreSQL, Redis, Ollama (all healthy)
+  - Model: llama3.2:1b (1.3GB) - tested and working
+  
+  NEXT:
+  - Add DNS records for tunnel
+  - Deploy landing to CloudFlare Pages
+  - Connect API Gateway Worker → ollama.efremov.help

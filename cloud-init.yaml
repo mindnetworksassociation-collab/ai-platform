@@ -1,0 +1,117 @@
+#cloud-config
+package_update: true
+package_upgrade: true
+
+packages:
+  - docker.io
+  - docker-compose
+  - ufw
+  - fail2ban
+  - curl
+  - wget
+  - git
+  - jq
+  - htop
+  - tmux
+
+runcmd:
+  # Enable Docker
+  - systemctl enable docker
+  - systemctl start docker
+  
+  # Add ubuntu user to docker group
+  - usermod -aG docker root
+  
+  # Configure UFW - Block everything except SSH initially
+  - ufw default deny incoming
+  - ufw default allow outgoing
+  - ufw allow 22/tcp
+  - ufw --force enable
+  
+  # Configure fail2ban
+  - systemctl enable fail2ban
+  - systemctl start fail2ban
+  
+  # Create app directory
+  - mkdir -p /opt/llm-platform
+  - mkdir -p /opt/llm-platform/data
+  - mkdir -p /opt/llm-platform/ollama
+  - mkdir -p /opt/llm-platform/postgres
+  - mkdir -p /opt/llm-platform/n8n
+  
+  # Install Cloudflare Tunnel
+  - curl -L https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64 -o /usr/local/bin/cloudflared
+  - chmod +x /usr/local/bin/cloudflared
+  
+  # Create ready marker
+  - touch /opt/llm-platform/.cloud-init-complete
+  
+  # Log completion
+  - echo "Cloud-init completed at $(date)" >> /var/log/cloud-init-custom.log
+
+write_files:
+  - path: /opt/llm-platform/docker-compose.yml
+    content: |
+      version: '3.8'
+      
+      services:
+        ollama:
+          image: ollama/ollama:latest
+          container_name: ollama
+          restart: unless-stopped
+          volumes:
+            - ./ollama:/root/.ollama
+          ports:
+            - "127.0.0.1:11434:11434"
+          environment:
+            - OLLAMA_HOST=0.0.0.0
+        
+        postgres:
+          image: pgvector/pgvector:pg16
+          container_name: postgres
+          restart: unless-stopped
+          volumes:
+            - ./postgres:/var/lib/postgresql/data
+          environment:
+            - POSTGRES_USER=llm
+            - POSTGRES_PASSWORD=CHANGE_ME_SECURE_PASSWORD
+            - POSTGRES_DB=llmplatform
+          ports:
+            - "127.0.0.1:5432:5432"
+        
+        redis:
+          image: redis:alpine
+          container_name: redis
+          restart: unless-stopped
+          ports:
+            - "127.0.0.1:6379:6379"
+        
+        n8n:
+          image: n8nio/n8n:latest
+          container_name: n8n
+          restart: unless-stopped
+          volumes:
+            - ./n8n:/home/node/.n8n
+          environment:
+            - N8N_SECURE_COOKIE=true
+            - N8N_HOST=localhost
+            - WEBHOOK_URL=https://n8n.yourdomain.com/
+          ports:
+            - "127.0.0.1:5678:5678"
+      
+      networks:
+        default:
+          name: llm-network
+
+  - path: /etc/fail2ban/jail.local
+    content: |
+      [sshd]
+      enabled = true
+      port = 22
+      filter = sshd
+      logpath = /var/log/auth.log
+      maxretry = 3
+      bantime = 3600
+      findtime = 600
+
+final_message: "LLM Platform BlackBox ready after $UPTIME seconds"

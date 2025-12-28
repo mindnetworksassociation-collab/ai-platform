@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Platform - Local LLM Power</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #fff;
+            min-height: 100vh;
+        }
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+        }
+        .logo { font-size: 24px; font-weight: bold; color: #00d4ff; }
+        nav a { color: #fff; text-decoration: none; margin-left: 30px; }
+        nav a:hover { color: #00d4ff; }
+        .hero {
+            text-align: center;
+            padding: 100px 0;
+        }
+        h1 {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            background: linear-gradient(90deg, #00d4ff, #7c3aed);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .subtitle {
+            font-size: 1.3rem;
+            color: #a0aec0;
+            margin-bottom: 40px;
+        }
+        .cta-btn {
+            background: linear-gradient(90deg, #00d4ff, #7c3aed);
+            color: #fff;
+            padding: 15px 40px;
+            border: none;
+            border-radius: 30px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .cta-btn:hover { transform: scale(1.05); }
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            padding: 60px 0;
+        }
+        .feature {
+            background: rgba(255,255,255,0.05);
+            padding: 30px;
+            border-radius: 15px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .feature h3 { color: #00d4ff; margin-bottom: 15px; }
+        .feature p { color: #a0aec0; line-height: 1.6; }
+        .demo {
+            background: rgba(0,0,0,0.3);
+            border-radius: 15px;
+            padding: 30px;
+            margin: 40px 0;
+        }
+        #chat-input {
+            width: 100%;
+            padding: 15px;
+            border: 1px solid #333;
+            border-radius: 10px;
+            background: #1a1a2e;
+            color: #fff;
+            font-size: 1rem;
+        }
+        #chat-output {
+            min-height: 150px;
+            padding: 20px;
+            margin-top: 20px;
+            background: #0d0d1a;
+            border-radius: 10px;
+            white-space: pre-wrap;
+        }
+        footer {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">🤖 AI Platform</div>
+            <nav>
+                <a href="#features">Features</a>
+                <a href="#demo">Try It</a>
+                <a href="#pricing">Pricing</a>
+                <a href="https://github.com/mindnetworksassociation-collab/ai-platform">GitHub</a>
+            </nav>
+        </header>
+        
+        <section class="hero">
+            <h1>Your Private AI Assistant</h1>
+            <p class="subtitle">Powered by local LLMs. No data leaves your infrastructure.<br>RAG, Vector Search, Custom Agents - all in one platform.</p>
+            <a href="#demo" class="cta-btn">Try Demo</a>
+        </section>
+        
+        <section class="features" id="features">
+            <div class="feature">
+                <h3>🔒 Privacy First</h3>
+                <p>All processing happens on your servers. No data sent to third parties. Full control over your AI.</p>
+            </div>
+            <div class="feature">
+                <h3>⚡ Edge + Backend</h3>
+                <p>CloudFlare edge for speed, dedicated servers for heavy compute. Best of both worlds.</p>
+            </div>
+            <div class="feature">
+                <h3>🧠 RAG Ready</h3>
+                <p>PostgreSQL + pgvector for semantic search. Upload docs, ask questions, get answers.</p>
+            </div>
+            <div class="feature">
+                <h3>🤖 Custom Agents</h3>
+                <p>Build your own AI agents with tool access. Automate workflows, not just chat.</p>
+            </div>
+        </section>
+        
+        <section class="demo" id="demo">
+            <h2 style="margin-bottom: 20px;">Try the API</h2>
+            <input type="text" id="chat-input" placeholder="Ask something..." onkeypress="if(event.key==='Enter')sendMessage()">
+            <div id="chat-output">Response will appear here...</div>
+        </section>
+        
+        <footer>
+            <p>© 2024 AI Platform | <a href="https://github.com/mindnetworksassociation-collab/ai-platform" style="color:#00d4ff">Open Source</a></p>
+        </footer>
+    </div>
+    
+    <script>
+        const API = 'https://llm-api-gateway.mindnetworksassociation.workers.dev';
+        async function sendMessage() {
+            const input = document.getElementById('chat-input');
+            const output = document.getElementById('chat-output');
+            const msg = input.value.trim();
+            if (!msg) return;
+            
+            output.textContent = 'Thinking...';
+            try {
+                const res = await fetch(API + '/api/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message: msg })
+                });
+                const data = await res.json();
+                output.textContent = data.response || data.error || JSON.stringify(data);
+            } catch (e) {
+                output.textContent = 'Error: ' + e.message;
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,38 +1,32 @@
 # LLM Platform - Version History
 # ================================
-# This file tracks all changes for AI assistants and developers.
 # Format: [DATE] [VERSION] - [COMPONENT] - [DESCRIPTION]
 # 
-# ARCHITECTURE OVERVIEW:
-# - CloudFlare (Edge): Landing pages, API Gateway, KV cache, D1 database, R2 storage
-# - DigitalOcean (Backend): PostgreSQL+pgvector, Redis, Ollama LLM, Custom Agents
-# - Supabase: User auth, realtime subscriptions
-#
-# WHY THIS SPLIT:
-# - CloudFlare: Free/cheap for static content, global CDN, serverless workers (pay per request)
-# - DigitalOcean: Fixed cost $24/mo for compute-heavy tasks (LLM inference, vector search)
-# - Supabase: Free tier auth, built-in RLS, real-time features
+# ARCHITECTURE:
+# - CloudFlare (Edge): Landing pages, API Gateway, KV cache, D1, R2
+# - DigitalOcean (Backend): PostgreSQL+pgvector, Redis, Ollama LLM
+# - Supabase: User auth
 # ================================
 
-[2025-12-28] v0.1.0 - INITIAL - Project structure created
-  - cloudflare/workers/api-gateway: Main API entry point with rate limiting
-  - cloudflare/workers/mcp-search-api: Web search integration
-  - cloudflare/pages: Landing pages (to be added)
-  - digitalocean/docker-compose.yml: PostgreSQL, Redis, Ollama stack
-  - Removed n8n (agents will be custom-built)
-  
-  DEPLOYED:
-  - API Gateway: https://llm-api-gateway.mindnetworksassociation.workers.dev
-  - Search API: https://mcp-search-api.mindnetworksassociation.workers.dev
-  - D1 Database: 67e0cf7a-7170-4145-bfbc-9b0d2f180dce
-  - KV Cache: 520ca0c4805e4f108d69f2ac876f11cb
-  - DigitalOcean Droplet: 164.92.231.18 (fra1, 4GB RAM)
-  
-  CREDENTIALS (store in Vault!):
-  - DO Token: dop_v1_8e7ee90... (truncated)
-  - Test API Key: llm_0816815febc043efade1ab84100ae635
+[2025-12-28] v0.1.0 - INITIAL - Project structure
+  - cloudflare/workers/api-gateway: API entry with rate limiting
+  - cloudflare/workers/mcp-search-api: Web search
+  - digitalocean/docker-compose.yml: PostgreSQL, Redis, Ollama
+  - Removed n8n (custom agents instead)
 
-[2025-12-28] v0.1.1 - REFACTOR - Removed n8n, preparing for custom agents
-  - Agents will be Python/Go microservices on DigitalOcean
-  - Will use pgvector for RAG, Ollama for local inference
-  - CloudFlare Workers for routing and caching
+[2025-12-28] v0.2.0 - DATABASE + MODEL
+  - Applied PostgreSQL schema with pgvector
+  - Tables: users, documents, conversations, messages, agent_tasks
+  - Loaded llama3.2:1b model to Ollama (1.3GB)
+  - Added landing page for CloudFlare Pages
+
+  DEPLOYED:
+  - API: https://llm-api-gateway.mindnetworksassociation.workers.dev
+  - GitHub: https://github.com/mindnetworksassociation-collab/ai-platform
+  - Droplet: 164.92.231.18 (fra1)
+  - Model: llama3.2:1b ready
+
+  NEXT:
+  - Deploy landing to CloudFlare Pages
+  - Connect API Gateway → Ollama via Cloudflare Tunnel
+  - Add embedding generation for RAG

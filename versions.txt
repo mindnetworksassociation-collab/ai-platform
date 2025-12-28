@@ -1,32 +1,37 @@
 # LLM Platform - Version History
 # ================================
-# Format: [DATE] [VERSION] - [COMPONENT] - [DESCRIPTION]
-# 
-# ARCHITECTURE:
-# - CloudFlare (Edge): Landing pages, API Gateway, KV cache, D1, R2
-# - DigitalOcean (Backend): PostgreSQL+pgvector, Redis, Ollama LLM
-# - Supabase: User auth
+# ARCHITECTURE: CloudFlare Edge + DigitalOcean Backend
+# DOMAIN: efremov.help
 # ================================
 
-[2025-12-28] v0.1.0 - INITIAL - Project structure
-  - cloudflare/workers/api-gateway: API entry with rate limiting
-  - cloudflare/workers/mcp-search-api: Web search
-  - digitalocean/docker-compose.yml: PostgreSQL, Redis, Ollama
-  - Removed n8n (custom agents instead)
+[2025-12-28] v0.1.0 - INITIAL
+  - Project structure created
+  - Workers: API Gateway, Search API
+  - Docker: PostgreSQL+pgvector, Redis, Ollama
 
 [2025-12-28] v0.2.0 - DATABASE + MODEL
-  - Applied PostgreSQL schema with pgvector
-  - Tables: users, documents, conversations, messages, agent_tasks
-  - Loaded llama3.2:1b model to Ollama (1.3GB)
-  - Added landing page for CloudFlare Pages
+  - PostgreSQL schema with pgvector
+  - Loaded llama3.2:1b to Ollama
+  - Landing page created
 
-  DEPLOYED:
-  - API: https://llm-api-gateway.mindnetworksassociation.workers.dev
-  - GitHub: https://github.com/mindnetworksassociation-collab/ai-platform
-  - Droplet: 164.92.231.18 (fra1)
-  - Model: llama3.2:1b ready
+[2025-12-28] v0.3.0 - DOMAIN SETUP
+  - Configured efremov.help domain
+  - API Gateway deployed to api.efremov.help
+  - Cloudflare Tunnel running for ollama.efremov.help
+  - Landing deployed to CloudFlare Pages
 
-  NEXT:
-  - Deploy landing to CloudFlare Pages
-  - Connect API Gateway → Ollama via Cloudflare Tunnel
-  - Add embedding generation for RAG
+  ENDPOINTS:
+  - Landing: https://efremov.help (pending domain setup)
+  - API: https://api.efremov.help/api/chat
+  - Ollama: https://ollama.efremov.help (via tunnel)
+  
+  INFRASTRUCTURE:
+  - Droplet: 164.92.231.18 (fra1, 4GB)
+  - Tunnel ID: 4b670c72-305e-4720-8531-391c003bbdb3
+  - D1: 67e0cf7a-7170-4145-bfbc-9b0d2f180dce
+  - KV: 520ca0c4805e4f108d69f2ac876f11cb
+
+  TODO:
+  - Add ollama.efremov.help hostname to tunnel
+  - Connect Pages to efremov.help domain
+  - Add Supabase auth integration

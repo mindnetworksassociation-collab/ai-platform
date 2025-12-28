@@ -1,6 +1,15 @@
 name = "llm-api-gateway"
 main = "src/index.js"
 compatibility_date = "2024-01-01"
+account_id = "95650f7e4fc031e9087cbe89b8e1081e"
+
+# Custom domain route
+routes = [
+  { pattern = "api.efremov.help/*", zone_name = "efremov.help" }
+]
+
+[vars]
+OLLAMA_URL = "https://ollama.efremov.help"
 
 [[d1_databases]]
 binding = "DB"
@@ -10,11 +19,3 @@ database_id = "67e0cf7a-7170-4145-bfbc-9b0d2f180dce"
 [[kv_namespaces]]
 binding = "CACHE"
 id = "520ca0c4805e4f108d69f2ac876f11cb"
-
-[vars]
-ENVIRONMENT = "production"
-SUPABASE_URL = "https://ceyvykqzziudpjrjlisq.supabase.co"
-
-[[services]]
-binding = "SEARCH"
-service = "mcp-search-api"

@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.4.1] - 2025-12-28
+
+### Security
+- **ADDED**: Internal token header for Ollama requests (X-Internal-Token)
+- **ADDED**: CloudFlare API token configured for automation
+- **VERIFIED**: All services bound to localhost only on droplet
+- **KILLED**: Rogue Python process on port 8080
+
+### Infrastructure  
+- CloudFlare Zone ID: ce7ce48e4e27c7cfc69386af588956a8
+- API Token stored (limited permissions - needs Workers:Edit)
+
+### API Gateway v0.4.1
+- Added internal token support for secure Ollama communication
+- Improved error handling and request timing
+
+---
+
 ## [0.3.1] - 2025-12-28
 
 ### Security

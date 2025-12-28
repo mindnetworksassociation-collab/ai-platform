@@ -1,8 +1,13 @@
 /**
- * LLM Platform API Gateway v0.4.0
+ * LLM Platform API Gateway v0.4.1
  * Routes: CloudFlare Edge → Ollama via Tunnel
- * Features: Rate limiting, API keys, audit logs
+ * Features: Rate limiting, API keys, audit logs, security headers
  * Domain: api.efremov.help
+ * 
+ * CHANGELOG v0.4.1:
+ * - Added internal token for Ollama requests
+ * - Improved error handling
+ * - Added request timing headers
  */
 
 export default {
@@ -83,7 +88,10 @@ export default {
         
         const response = await fetch(`${ollamaUrl}/api/generate`, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 
+            'Content-Type': 'application/json',
+            'X-Internal-Token': env.INTERNAL_TOKEN || ''
+          },
           body: JSON.stringify({
             model: body.model || 'llama3.2:1b',
             prompt: message,
